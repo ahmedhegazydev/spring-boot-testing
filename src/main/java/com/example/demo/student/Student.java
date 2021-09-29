@@ -26,12 +26,18 @@ public class Student {
             generator = "student_sequence",
             strategy = GenerationType.SEQUENCE)
     private Long id;
+
+
     @NotBlank
     @Column(nullable = false)
     private String name;
+
+
     @Email
     @Column(nullable = false, unique = true)
     private String email;
+
+
     @NotNull
     @Enumerated(EnumType.STRING)
     @Column(nullable = false)

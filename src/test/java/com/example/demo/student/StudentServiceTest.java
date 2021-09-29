@@ -1,6 +1,7 @@
 package com.example.demo.student;
 
 import com.example.demo.student.exception.BadRequestException;
+import com.example.demo.student.exception.StudentNotFoundException;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Disabled;
@@ -15,9 +16,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import static org.assertj.core.api.Java6Assertions.assertThat;
 import static org.assertj.core.api.Java6Assertions.assertThatThrownBy;
 import static org.junit.jupiter.api.Assertions.*;
-import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.ArgumentMatchers.anyString;
+import static org.mockito.ArgumentMatchers.*;
 import static org.mockito.BDDMockito.given;
+import static org.mockito.BDDMockito.willReturn;
 import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.verify;
 
@@ -118,6 +119,34 @@ class StudentServiceTest {
         //then
         verify(studentRepository).deleteAll();//Passed
 //        verify(studentRepository).findAll();//Failed
+    }
+
+    @Test
+    void canDeleteStudent() {
+        // given
+        long id = 10;
+        given(studentRepository.existsById(id))
+                .willReturn(true);
+        // when
+        studentService.deleteStudent(id);
+
+        // then
+        verify(studentRepository).deleteById(id);
+    }
+
+    @Test
+    void willThrowWhenDeleteStudentNotFound() {
+        // given
+        long id = 10;
+        given(studentRepository.existsById(id))
+                .willReturn(false);
+        // when
+        // then
+        assertThatThrownBy(() -> studentService.deleteStudent(id))
+                .isInstanceOf(StudentNotFoundException.class)
+                .hasMessageContaining("Student with id " + id + " does not exists");
+
+        verify(studentRepository, never()).deleteById(any());
     }
 
 

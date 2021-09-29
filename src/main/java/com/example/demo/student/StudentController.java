@@ -28,4 +28,6 @@ public class StudentController {
             @PathVariable("studentId") Long studentId) {
         studentService.deleteStudent(studentId);
     }
+
+
 }
