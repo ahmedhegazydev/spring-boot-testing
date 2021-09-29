@@ -5,11 +5,13 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.ArgumentCaptor;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.beans.factory.annotation.Autowired;
 
+import static org.assertj.core.api.Java6Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.verify;
 
@@ -48,8 +50,28 @@ class StudentServiceTest {
     }
 
     @Test
-    @Disabled
-    void addStudent() {
+//    @Disabled
+    void canAddStudent() {
+
+        //give
+        String email = "engahmedhegazy2025@gmail.com";
+        Student student = new Student(
+                "Ahmed Mohamed",
+                email,
+                Gender.FEMALE);
+        studentService.addStudent(student);
+
+        //when
+        ArgumentCaptor<Student> studentArgumentCaptor =
+                ArgumentCaptor.forClass(Student.class);
+
+        //then
+        verify(studentRepository).save(studentArgumentCaptor.capture());
+
+        Student capturedStudent = studentArgumentCaptor.getValue();
+        assertThat(capturedStudent).isEqualTo(student);
+
+
     }
 
     @Test
