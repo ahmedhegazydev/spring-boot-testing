@@ -110,7 +110,16 @@ class StudentServiceTest {
     }
 
     @Test
-    @Disabled
-    void deleteStudent() {
+//    @Disabled
+    void canDeleteAllStudent() {
+        //when
+        studentService.deleteAllStudents();
+
+        //then
+        verify(studentRepository).deleteAll();//Passed
+//        verify(studentRepository).findAll();//Failed
     }
+
+
+
 }

@@ -19,6 +19,10 @@ public class StudentService {
         return studentRepository.findAll();
     }
 
+    public void deleteAllStudents() {
+        studentRepository.deleteAll();
+    }
+
     public void addStudent(Student student) {
         Boolean existsEmail = studentRepository
                 .selectExistsEmail(student.getEmail());
@@ -37,4 +41,7 @@ public class StudentService {
         }
         studentRepository.deleteById(studentId);
     }
+
+
+
 }
