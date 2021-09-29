@@ -1,5 +1,6 @@
 package com.example.demo.student;
 
+import com.example.demo.student.exception.BadRequestException;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Disabled;
@@ -12,14 +13,19 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import static org.assertj.core.api.Java6Assertions.assertThat;
+import static org.assertj.core.api.Java6Assertions.assertThatThrownBy;
 import static org.junit.jupiter.api.Assertions.*;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.anyString;
+import static org.mockito.BDDMockito.given;
+import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.verify;
 
 @ExtendWith(MockitoExtension.class)
 class StudentServiceTest {
 
 
-//    @Autowired
+    //    @Autowired
     @Mock
     private StudentRepository studentRepository;
     private StudentService studentService;
@@ -71,6 +77,35 @@ class StudentServiceTest {
         Student capturedStudent = studentArgumentCaptor.getValue();
         assertThat(capturedStudent).isEqualTo(student);
 
+
+    }
+
+    @Test
+//    @Disabled
+    void willThrowWhenEmailIsTaken() {
+
+        //given
+        String email = "engahmedhegazy2025@gmail.com";
+        Student student = new Student(
+                "Ahmed Mohamed",
+                email,
+                Gender.FEMALE);
+
+        given(studentRepository.selectExistsEmail(
+//                student.getEmail()
+                anyString()
+        ))
+                .willReturn(true);
+
+        //when
+        //then
+        assertThatThrownBy(() -> {
+            studentService.addStudent(student);
+        })
+                .isInstanceOf(BadRequestException.class)
+                .hasMessageContaining("Email " + student.getEmail() + " taken");
+
+        verify(studentRepository, never()).save(any());
 
     }
 
